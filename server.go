@@ -20,7 +20,8 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	client, err := ent.Open("postgres", "postgres://postgres:root@localhost:5432/newusertable?sslmode=disable")
+	Database := os.Getenv(${{ Postgres.DATABASE_URL }})
+	client, err := ent.Open("postgres", )
 	if err != nil {
 		log.Fatalf("failed to open connection %v", err)
 	}
