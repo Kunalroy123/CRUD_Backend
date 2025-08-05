@@ -243,6 +243,16 @@ func AgeLTE(v int) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldAge, v))
 }
 
+// AgeIsNil applies the IsNil predicate on the "age" field.
+func AgeIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldAge))
+}
+
+// AgeNotNil applies the NotNil predicate on the "age" field.
+func AgeNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldAge))
+}
+
 // PhoneEQ applies the EQ predicate on the "phone" field.
 func PhoneEQ(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPhone, v))

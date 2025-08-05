@@ -13,8 +13,34 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescName is the schema descriptor for name field.
+	userDescName := userFields[0].Descriptor()
+	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	user.NameValidator = userDescName.Validators[0].(func(string) error)
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[1].Descriptor()
+	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
 	// userDescAge is the schema descriptor for age field.
 	userDescAge := userFields[2].Descriptor()
 	// user.AgeValidator is a validator for the "age" field. It is called by the builders before save.
 	user.AgeValidator = userDescAge.Validators[0].(func(int) error)
+	// userDescPhone is the schema descriptor for phone field.
+	userDescPhone := userFields[3].Descriptor()
+	// user.PhoneValidator is a validator for the "phone" field. It is called by the builders before save.
+	user.PhoneValidator = func() func(string) error {
+		validators := userDescPhone.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(phone string) error {
+			for _, fn := range fns {
+				if err := fn(phone); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 }

@@ -76,6 +76,12 @@ func (_u *UserUpdate) AddAge(v int) *UserUpdate {
 	return _u
 }
 
+// ClearAge clears the value of the "age" field.
+func (_u *UserUpdate) ClearAge() *UserUpdate {
+	_u.mutation.ClearAge()
+	return _u
+}
+
 // SetPhone sets the "phone" field.
 func (_u *UserUpdate) SetPhone(v string) *UserUpdate {
 	_u.mutation.SetPhone(v)
@@ -124,9 +130,24 @@ func (_u *UserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "User.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Age(); ok {
 		if err := user.AgeValidator(v); err != nil {
 			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Phone(); ok {
+		if err := user.PhoneValidator(v); err != nil {
+			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "User.phone": %w`, err)}
 		}
 	}
 	return nil
@@ -155,6 +176,9 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedAge(); ok {
 		_spec.AddField(user.FieldAge, field.TypeInt, value)
+	}
+	if _u.mutation.AgeCleared() {
+		_spec.ClearField(user.FieldAge, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Phone(); ok {
 		_spec.SetField(user.FieldPhone, field.TypeString, value)
@@ -228,6 +252,12 @@ func (_u *UserUpdateOne) AddAge(v int) *UserUpdateOne {
 	return _u
 }
 
+// ClearAge clears the value of the "age" field.
+func (_u *UserUpdateOne) ClearAge() *UserUpdateOne {
+	_u.mutation.ClearAge()
+	return _u
+}
+
 // SetPhone sets the "phone" field.
 func (_u *UserUpdateOne) SetPhone(v string) *UserUpdateOne {
 	_u.mutation.SetPhone(v)
@@ -289,9 +319,24 @@ func (_u *UserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "User.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Age(); ok {
 		if err := user.AgeValidator(v); err != nil {
 			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Phone(); ok {
+		if err := user.PhoneValidator(v); err != nil {
+			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "User.phone": %w`, err)}
 		}
 	}
 	return nil
@@ -337,6 +382,9 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if value, ok := _u.mutation.AddedAge(); ok {
 		_spec.AddField(user.FieldAge, field.TypeInt, value)
+	}
+	if _u.mutation.AgeCleared() {
+		_spec.ClearField(user.FieldAge, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Phone(); ok {
 		_spec.SetField(user.FieldPhone, field.TypeString, value)

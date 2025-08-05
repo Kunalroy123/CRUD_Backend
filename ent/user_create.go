@@ -37,6 +37,14 @@ func (_c *UserCreate) SetAge(v int) *UserCreate {
 	return _c
 }
 
+// SetNillableAge sets the "age" field if the given value is not nil.
+func (_c *UserCreate) SetNillableAge(v *int) *UserCreate {
+	if v != nil {
+		_c.SetAge(*v)
+	}
+	return _c
+}
+
 // SetPhone sets the "phone" field.
 func (_c *UserCreate) SetPhone(v string) *UserCreate {
 	_c.mutation.SetPhone(v)
@@ -80,11 +88,18 @@ func (_c *UserCreate) check() error {
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
 	}
+	if v, ok := _c.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "User.name": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Email(); !ok {
 		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "User.email"`)}
 	}
-	if _, ok := _c.mutation.Age(); !ok {
-		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "User.age"`)}
+	if v, ok := _c.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
 	}
 	if v, ok := _c.mutation.Age(); ok {
 		if err := user.AgeValidator(v); err != nil {
@@ -93,6 +108,11 @@ func (_c *UserCreate) check() error {
 	}
 	if _, ok := _c.mutation.Phone(); !ok {
 		return &ValidationError{Name: "phone", err: errors.New(`ent: missing required field "User.phone"`)}
+	}
+	if v, ok := _c.mutation.Phone(); ok {
+		if err := user.PhoneValidator(v); err != nil {
+			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "User.phone": %w`, err)}
+		}
 	}
 	return nil
 }

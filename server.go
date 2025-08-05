@@ -17,15 +17,8 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
-// const defaultPort = "8080"
-
 func main() {
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		dbURL = "postgres://postgres:root@database-2.ct6ek6eqa5lf.ap-south-1.rds.amazonaws.com:5432/newusertable?sslmode=require"
-	}
-
-	client, err := ent.Open("postgres", dbURL)
+	client, err := ent.Open("postgres", "postgres://postgres:root@localhost:5432/newusertable?sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed to open connection %v", err)
 	}
@@ -37,7 +30,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "80"
+		port = "8080"
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Client: client}}))

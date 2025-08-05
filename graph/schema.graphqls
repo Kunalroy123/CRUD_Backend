@@ -13,7 +13,7 @@ type User {
 input CreateUser {
   name: String!
   email: String!
-  age: Int!
+  age: Int
   phone: String!
 }
 
@@ -30,7 +30,7 @@ type Query {
 }
 
 type Mutation {
-  CreateUser(input: CreateUser!): User!
+  CreateUser(input: CreateUser): User
   UpdateUser(id:ID!, input:UpdateUser!): User!
   DeleteUser(id:ID!): Boolean!
 }

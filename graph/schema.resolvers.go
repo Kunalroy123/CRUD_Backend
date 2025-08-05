@@ -12,11 +12,11 @@ import (
 )
 
 // CreateUser is the resolver for the CreateUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUser) (*ent.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input *model.CreateUser) (*ent.User, error) {
 	user, err := r.Client.User.Create().
 		SetName(input.Name).
 		SetEmail(input.Email).
-		SetAge(int(input.Age)).
+		SetAge(int(*input.Age)).
 		SetPhone(input.Phone).
 		Save(ctx)
 	if err != nil {
@@ -65,7 +65,8 @@ func (r *queryResolver) UserByID(ctx context.Context, id string) (*ent.User, err
 
 // Age is the resolver for the age field.
 func (r *userResolver) Age(ctx context.Context, obj *ent.User) (int32, error) {
-	return int32(obj.Age), nil
+	age := int32(obj.Age)
+	return age, nil
 }
 
 // Mutation returns MutationResolver implementation.

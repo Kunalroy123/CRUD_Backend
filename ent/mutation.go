@@ -263,10 +263,24 @@ func (m *UserMutation) AddedAge() (r int, exists bool) {
 	return *v, true
 }
 
+// ClearAge clears the value of the "age" field.
+func (m *UserMutation) ClearAge() {
+	m.age = nil
+	m.addage = nil
+	m.clearedFields[user.FieldAge] = struct{}{}
+}
+
+// AgeCleared returns if the "age" field was cleared in this mutation.
+func (m *UserMutation) AgeCleared() bool {
+	_, ok := m.clearedFields[user.FieldAge]
+	return ok
+}
+
 // ResetAge resets all changes to the "age" field.
 func (m *UserMutation) ResetAge() {
 	m.age = nil
 	m.addage = nil
+	delete(m.clearedFields, user.FieldAge)
 }
 
 // SetPhone sets the "phone" field.
@@ -466,7 +480,11 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *UserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(user.FieldAge) {
+		fields = append(fields, user.FieldAge)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -479,6 +497,11 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
+	switch name {
+	case user.FieldAge:
+		m.ClearAge()
+		return nil
+	}
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 
