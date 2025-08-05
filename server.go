@@ -22,7 +22,7 @@ import (
 func main() {
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://postgres:root@database-1.ct6ek6eqa5lf.ap-south-1.rds.amazonaws.com:5432/newusertable?sslmode=require"
+		dbURL = "postgres://postgres:root@database-2.ct6ek6eqa5lf.ap-south-1.rds.amazonaws.com:5432/newusertable?sslmode=require"
 	}
 
 	client, err := ent.Open("postgres", dbURL)
